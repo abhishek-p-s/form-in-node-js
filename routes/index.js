@@ -2,6 +2,7 @@ var express = require('express');
 const { MongoClient } = require('mongodb');
 var router = express.Router();
 var Mongoclient=require('mongodb').Mongoclient
+var helper=require('../helper/product-adding')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -10,15 +11,21 @@ router.get('/', function(req, res, next) {
 
 router.post('/submit',function(req,res){
   console.log(req.body)
-  MongoClient.connect('mongodb://localhost:27017',function(err,client){
-    if(err)
-    console.log("error")
-    else
-    console.log("connected")
-    client.db("abhishek").collection('user').insertOne(req.body)
+  helper.addproduct(req.body,(result)=>{
+    res.render('index')
+  })
   })
 
-  res.send("thank you...")
-});
+
+
+router.get('/table',(req,res,next)=>{
+
+  helper.getDetails().then((details)=>{
+
+    res.render('table-view/table.hbs',{details})
+
+  })
+ 
+})
 
 module.exports = router;
